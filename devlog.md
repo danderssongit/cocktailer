@@ -33,6 +33,10 @@ Went for a walk and started listening to a Syntax.fm episode with the creator of
 
 Starting out by making most basic components.
 
+Figuring out where to put css variables... I guess in the `styles.css` will do for now?
+
+Don't really like how css styling is done, mainly due to missing syntax highlighting.
+
 ### Notes
 
 @customElement("cocktail-app") is a decorator shorthand for
@@ -40,6 +44,10 @@ Starting out by making most basic components.
 ```typescript
 window.customElements.define("cocktail-app", CocktailApp);
 ```
+
+@query('#newitem')
+input!: HTMLInputElement;
+^isCool.
 
 #### Resources used
 

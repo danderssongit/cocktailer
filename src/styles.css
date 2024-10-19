@@ -1,0 +1,10 @@
+:root {
+	--font-family: Arial, sans-serif;
+	--font-size: 16px;
+	--text-color: #333;
+	--bg-color: #fff;
+	--border-color: #ccc;
+	--border-radius: 4px;
+	--focus-color: #ff69ff;
+	--focus-shadow-color: #ff69ff;
+}
