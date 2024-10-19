@@ -29,6 +29,10 @@ Went for a walk and started listening to a Syntax.fm episode with the creator of
 
 ## #002 Getting my hands on Lit
 
+### Reflections
+
+Starting out by making most basic components.
+
 ### Notes
 
 @customElement("cocktail-app") is a decorator shorthand for
