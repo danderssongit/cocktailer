@@ -81,6 +81,11 @@ export class SearchBar extends LitElement {
 	}
 
 	handleSearch() {
-		console.log("Query:", this.query);
+		const searchEvent = new CustomEvent("search", {
+			detail: this.query,
+			bubbles: true,
+			composed: true,
+		});
+		this.dispatchEvent(searchEvent);
 	}
 }
