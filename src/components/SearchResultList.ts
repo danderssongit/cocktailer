@@ -89,6 +89,20 @@ export class SearchResultList extends LitElement {
 				width: 100%;
 			}
 		}
+		.add-all-button {
+			margin-top: 1rem;
+			padding: 0.5rem 1rem;
+			background-color: var(--primary-color, #4caf50);
+			color: white;
+			border: none;
+			border-radius: 0.25rem;
+			cursor: pointer;
+			font-family: "Futura", sans-serif;
+			transition: background-color 0.2s;
+		}
+		.add-all-button:hover {
+			background-color: var(--primary-color-dark, #45a049);
+		}
 	`;
 
 	updated(changedProperties: Map<string, any>) {
@@ -127,11 +141,27 @@ export class SearchResultList extends LitElement {
 										)}
 									</ul>
 								</div>
+								<button
+									class="add-all-button"
+									@click=${() => this.addAllIngredientsToShoppingList(drink)}
+								>
+									Add All Ingredients to Shopping List
+								</button>
 							</div>
 						</div>
 					`
 				)}
 			</div>
 		`;
+	}
+
+	addAllIngredientsToShoppingList(drink: Drink) {
+		const ingredients = this.getIngredients(drink);
+		const event = new CustomEvent("add-all-to-shopping-list", {
+			detail: ingredients,
+			bubbles: true,
+			composed: true,
+		});
+		this.dispatchEvent(event);
 	}
 }

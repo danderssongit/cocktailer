@@ -4,6 +4,7 @@ import { Drink } from "../types";
 
 import "./SearchBar";
 import "./SearchResultList";
+import "./ShoppingList";
 
 @customElement("app-shell")
 export class AppShell extends LitElement {
@@ -351,6 +352,9 @@ export class AppShell extends LitElement {
 		},
 	];
 
+	@state()
+	private shoppingList: Set<string> = new Set();
+
 	static styles = css`
 		:host {
 			display: flex;
@@ -361,6 +365,14 @@ export class AppShell extends LitElement {
 			display: flex;
 			flex: 1;
 			overflow-y: auto;
+		}
+		search-result-list {
+			flex: 3;
+			padding-right: 1rem;
+		}
+		shopping-list {
+			flex: 1;
+			min-width: 25%;
 		}
 	`;
 
@@ -378,11 +390,21 @@ export class AppShell extends LitElement {
 		}
 	}
 
+	addAllToShoppingList(ingredients: string[]) {
+		ingredients.forEach((ingredient) => this.shoppingList.add(ingredient));
+		this.requestUpdate("shoppingList");
+	}
+
 	render() {
 		return html`
 			<search-bar @search=${this.handleSearch}></search-bar>
 			<div class="main-content">
-				<search-result-list .drinks=${this.drinks}></search-result-list>
+				<search-result-list
+					.drinks=${this.drinks}
+					@add-all-to-shopping-list=${(e: CustomEvent) =>
+						this.addAllToShoppingList(e.detail)}
+				></search-result-list>
+				<shopping-list .items=${Array.from(this.shoppingList)}></shopping-list>
 			</div>
 		`;
 	}
