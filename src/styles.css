@@ -1,10 +1,26 @@
 :root {
-	--font-family: Arial, sans-serif;
+	--font-family: "Futura", Arial, sans-serif;
 	--font-size: 16px;
 	--text-color: #333;
 	--bg-color: #fff;
 	--border-color: #ccc;
-	--border-radius: 4px;
+	--border-radius: 1.5rem;
 	--focus-color: #ff69ff;
 	--focus-shadow-color: #ff69ff;
+
+	--primary-color: #250524;
+	--primary-color-dark: #45a049;
+	--secondary-color: #666;
+	--success-color: #4caf50;
+
+	--card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.08);
+}
+
+body {
+	font-family: var(--font-family);
+	font-size: var(--font-size);
+	color: var(--text-color);
+	background-color: var(--bg-color);
+	margin: 0;
+	padding: 0;
 }

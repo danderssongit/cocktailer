@@ -360,19 +360,26 @@ export class AppShell extends LitElement {
 			display: flex;
 			flex-direction: column;
 			height: 100vh;
+			padding: 2rem;
 		}
 		.main-content {
 			display: flex;
 			flex: 1;
 			overflow-y: auto;
+			margin-top: 2rem;
+			gap: 1rem;
 		}
 		search-result-list {
 			flex: 3;
-			padding-right: 1rem;
+			overflow-y: auto;
 		}
 		shopping-list {
 			flex: 1;
 			min-width: 25%;
+			position: sticky;
+			top: 2rem;
+			max-height: calc(100vh - 4rem);
+			overflow-y: auto;
 		}
 	`;
 
@@ -401,6 +408,7 @@ export class AppShell extends LitElement {
 			<div class="main-content">
 				<search-result-list
 					.drinks=${this.drinks}
+					.shoppingList=${this.shoppingList}
 					@add-all-to-shopping-list=${(e: CustomEvent) =>
 						this.addAllToShoppingList(e.detail)}
 				></search-result-list>

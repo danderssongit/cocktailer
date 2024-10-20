@@ -10,22 +10,23 @@ export class ShoppingList extends LitElement {
 		:host {
 			display: block;
 			width: 100%;
-			margin: 0;
-			padding: 1rem;
-			background-color: var(--bg-color, #fff);
-			box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.08);
+			max-width: 400px;
+			padding: 1.5rem;
+			background-color: var(--bg-color, #ffffff);
+			box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
 			border-radius: 0.5rem;
-			font-family: "Futura", sans-serif;
+			border: 1px solid var(--border-color, #e0e0e0);
+			font-family: "Helvetica Neue", Arial, sans-serif;
 			position: sticky;
-			top: 1rem;
 			max-height: calc(100vh - 2rem);
 			overflow-y: auto;
 		}
 
 		h2 {
-			margin: 0 0 1rem;
-			font-size: 1.5rem;
-			color: var(--primary-color, #333);
+			margin: 0 0 1.5rem;
+			font-size: 1.75rem;
+			color: var(--primary-color, #333333);
+			font-weight: 500;
 		}
 
 		ul {
@@ -35,9 +36,9 @@ export class ShoppingList extends LitElement {
 		}
 
 		li {
-			padding: 0.5rem 0;
-			border-bottom: 1px solid var(--border-color, #eee);
-			color: var(--secondary-color, #666);
+			padding: 0.75rem 0;
+			border-bottom: 1px solid var(--border-color, #e0e0e0);
+			color: var(--secondary-color, #555555);
 			font-size: 1rem;
 		}
 
@@ -47,7 +48,7 @@ export class ShoppingList extends LitElement {
 
 		.empty-list {
 			font-style: italic;
-			color: var(--secondary-color, #666);
+			color: var(--secondary-color, #888888);
 		}
 	`;
 
