@@ -1,6 +1,8 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import "./PrintButton";
+
 @customElement("shopping-list")
 export class ShoppingList extends LitElement {
 	@property({ type: Array })
@@ -50,20 +52,29 @@ export class ShoppingList extends LitElement {
 			font-style: italic;
 			color: var(--secondary-color, #888888);
 		}
+
+		.print-content {
+			margin-bottom: 1rem;
+		}
 	`;
 
 	render() {
 		return html`
-			<h2>Shopping List</h2>
-			${this.items.length === 0
-				? html`<p class="empty-list">Your shopping list is empty.</p>`
-				: html`
-						<ul>
-							${this.items.map((item) => html`<li>${item}</li>`)}
-						</ul>
-				  `}
+			<div class="print-content">
+				<h2>Shopping List</h2>
+				${this.items.length === 0
+					? html`<p class="empty-list">Your shopping list is empty.</p>`
+					: html`
+							<ul>
+								${this.items.map((item) => html`<li>${item}</li>`)}
+							</ul>
+					  `}
+			</div>
+			<print-button
+				selector=".print-content"
+				.disabled="${this.items.length === 0}"
+				>Print</print-button
+			>
 		`;
 	}
 }
-
-export * from "./ShoppingList";

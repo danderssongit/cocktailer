@@ -22,6 +22,7 @@ export class AppShell extends LitElement {
 			height: 100vh;
 			padding: 2rem;
 		}
+
 		.main-content {
 			display: flex;
 			flex: 1;
@@ -29,17 +30,17 @@ export class AppShell extends LitElement {
 			margin-top: 2rem;
 			gap: 1rem;
 		}
+
 		search-result-list {
 			flex: 3;
 			overflow-y: auto;
 		}
+
 		shopping-list {
 			flex: 1;
 			min-width: 25%;
 			position: sticky;
-			top: 2rem;
 			max-height: calc(100vh - 4rem);
-			overflow-y: visible;
 		}
 	`;
 
