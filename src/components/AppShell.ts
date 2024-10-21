@@ -39,7 +39,7 @@ export class AppShell extends LitElement {
 			position: sticky;
 			top: 2rem;
 			max-height: calc(100vh - 4rem);
-			overflow-y: auto;
+			overflow-y: visible;
 		}
 	`;
 

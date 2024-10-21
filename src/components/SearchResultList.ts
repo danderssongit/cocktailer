@@ -8,7 +8,7 @@ export class SearchResultList extends LitElement {
 	@property({ type: Array })
 	drinks: Drink[] = [];
 
-	@property({ type: Set })
+	@property({ type: Object })
 	shoppingList: Set<string> = new Set();
 
 	static styles = css`
@@ -101,6 +101,30 @@ export class SearchResultList extends LitElement {
 		}
 	`;
 
+	firstUpdated() {
+		this.applyBackgroundColors();
+	}
+
+	updated(changedProperties: Map<string, any>) {
+		if (changedProperties.has("drinks")) {
+			this.applyBackgroundColors();
+		}
+	}
+
+	private applyBackgroundColors() {
+		setTimeout(() => {
+			const drinkCards = this.shadowRoot?.querySelectorAll(".drink-card");
+			drinkCards?.forEach((card) => {
+				const image = card.querySelector("img") as HTMLImageElement;
+				const content = card.querySelector(".drink-content") as HTMLElement;
+				if (image && content) {
+					image.crossOrigin = "anonymous";
+					applyAverageColorToElement(image, content);
+				}
+			});
+		}, 0);
+	}
+
 	getIngredients(drink: Drink): string[] {
 		const ingredients: string[] = [];
 		for (let i = 1; i <= 15; i++) {
@@ -117,13 +141,20 @@ export class SearchResultList extends LitElement {
 		return this.shoppingList.has(ingredient);
 	}
 
-	allIngredientsInShoppingList(drink: Drink): boolean {
+	areAllIngredientsInShoppingList(drink: Drink): boolean {
 		const ingredients = this.getIngredients(drink);
 		return ingredients.every((ingredient) => this.isInShoppingList(ingredient));
 	}
 
-	areAllIngredientsInShoppingList(drink: Drink): boolean {
-		return this.allIngredientsInShoppingList(drink);
+	addAllIngredientsToShoppingList(drink: Drink) {
+		const ingredients = this.getIngredients(drink);
+		const event = new CustomEvent("add-all-to-shopping-list", {
+			detail: ingredients,
+			bubbles: true,
+			composed: true,
+		});
+		this.dispatchEvent(event);
+		this.requestUpdate();
 	}
 
 	render() {
@@ -182,41 +213,5 @@ export class SearchResultList extends LitElement {
 				)}
 			</div>
 		`;
-	}
-
-	addAllIngredientsToShoppingList(drink: Drink) {
-		const ingredients = this.getIngredients(drink);
-		const event = new CustomEvent("add-all-to-shopping-list", {
-			detail: ingredients,
-			bubbles: true,
-			composed: true,
-		});
-		this.dispatchEvent(event);
-		this.requestUpdate();
-	}
-
-	firstUpdated() {
-		this.applyBackgroundColors();
-	}
-
-	updated(changedProperties: Map<string, any>) {
-		if (changedProperties.has("drinks")) {
-			this.applyBackgroundColors();
-		}
-	}
-
-	private applyBackgroundColors() {
-		setTimeout(() => {
-			const drinkCards = this.shadowRoot?.querySelectorAll(".drink-card");
-			drinkCards?.forEach((card) => {
-				const image = card.querySelector("img") as HTMLImageElement;
-				const content = card.querySelector(".drink-content") as HTMLElement;
-				if (image && content) {
-					image.crossOrigin = "anonymous"; // Add this line to allow loading cross-origin images
-					applyAverageColorToElement(image, content);
-					console.log("okay");
-				}
-			});
-		}, 0);
 	}
 }
