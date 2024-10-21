@@ -6,6 +6,7 @@ import { drinks } from "../data";
 import "./SearchBar";
 import "./SearchResultList";
 import "./ShoppingList";
+import "./Toast";
 
 @customElement("app-shell")
 export class AppShell extends LitElement {
@@ -14,6 +15,9 @@ export class AppShell extends LitElement {
 
 	@state()
 	private shoppingList: Set<string> = new Set();
+
+	@state()
+	private toastMessages: string[] = [];
 
 	static styles = css`
 		:host {
@@ -40,27 +44,40 @@ export class AppShell extends LitElement {
 			flex: 1;
 			min-width: 25%;
 			position: sticky;
-			max-height: calc(100vh - 4rem);
+			height: fit-content;
 		}
 	`;
 
+	private showToast(message: string) {
+		this.toastMessages = [...this.toastMessages, message];
+	}
+
 	async handleSearch(e: CustomEvent) {
 		const query = e.detail;
+		this.showToast("Searching...");
 		try {
 			const response = await fetch(
 				`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${query}`
 			);
 			const data: { drinks: Drink[] } = await response.json();
 			this.drinks = data.drinks || [];
+			if (this.drinks.length > 0) {
+				this.showToast(`Found ${this.drinks.length} results.`);
+			} else {
+				this.showToast("No results found.");
+			}
 		} catch (error) {
 			console.error("Error fetching drinks:", error);
 			this.drinks = [];
+			this.showToast("An error occurred while searching.");
 		}
 	}
 
 	addAllToShoppingList(ingredients: string[]) {
 		ingredients.forEach((ingredient) => this.shoppingList.add(ingredient));
+		this.shoppingList = new Set(this.shoppingList); // Create a new Set to trigger update
 		this.requestUpdate("shoppingList");
+		this.showToast("Ingredients added to shopping list.");
 	}
 
 	render() {
@@ -75,6 +92,17 @@ export class AppShell extends LitElement {
 				></search-result-list>
 				<shopping-list .items=${Array.from(this.shoppingList)}></shopping-list>
 			</div>
+			${this.toastMessages.map(
+				(message) => html`
+					<toast-message
+						.message=${message}
+						@toast-dismissed=${() =>
+							(this.toastMessages = this.toastMessages.filter(
+								(m) => m !== message
+							))}
+					></toast-message>
+				`
+			)}
 		`;
 	}
 }
