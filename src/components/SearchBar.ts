@@ -77,11 +77,16 @@ export class SearchBar extends LitElement {
 		}
 	}
 
+	handleSubmit(e: Event) {
+		e.preventDefault();
+		this.dispatchEvent(new CustomEvent("search", { detail: this.query }));
+	}
+
 	render() {
 		return html`
 			<div class="search-container">
 				<input
-					type="text"
+					type="search"
 					@input=${this.handleInput}
 					@keydown=${this.handleKeyDown}
 					.value=${this.query}

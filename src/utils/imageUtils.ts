@@ -42,8 +42,6 @@ export function getAverageColor(
 					b: Math.floor(b / count),
 				};
 
-				console.log("Final average color:", result);
-
 				resolve(result);
 			} else {
 				console.error("Could not get 2D context from canvas");
