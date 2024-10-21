@@ -56,12 +56,34 @@ export class SearchBar extends LitElement {
 		`,
 	];
 
+	handleSearch() {
+		const searchEvent = new CustomEvent("search", {
+			detail: this.query,
+			bubbles: true,
+			composed: true,
+		});
+		this.dispatchEvent(searchEvent);
+	}
+
+	handleInput(event: Event) {
+		this.query = (event.target as HTMLInputElement).value;
+	}
+
+	handleKeyDown(event: KeyboardEvent) {
+		if (event.key === "Enter") {
+			this.handleSearch();
+		} else if (event.key === "Escape") {
+			this.query = "";
+		}
+	}
+
 	render() {
 		return html`
 			<div class="search-container">
 				<input
 					type="text"
-					@input=${this.updateQuery}
+					@input=${this.handleInput}
+					@keydown=${this.handleKeyDown}
 					.value=${this.query}
 					placeholder="Search..."
 				/>
@@ -74,13 +96,5 @@ export class SearchBar extends LitElement {
 				</button>
 			</div>
 		`;
-	}
-
-	updateQuery(event: Event) {
-		this.query = (event.target as HTMLInputElement).value;
-	}
-
-	handleSearch() {
-		console.log("Query:", this.query);
 	}
 }
