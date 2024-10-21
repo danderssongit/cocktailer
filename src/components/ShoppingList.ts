@@ -16,7 +16,7 @@ export class ShoppingList extends LitElement {
 			padding: 1.5rem;
 			background-color: var(--bg-color, #ffffff);
 			box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
-			border-radius: 0.5rem;
+			border-radius: var(--border-radius, 1.5rem);
 			border: 1px solid var(--border-color, #e0e0e0);
 			font-family: "Helvetica Neue", Arial, sans-serif;
 			position: sticky;
