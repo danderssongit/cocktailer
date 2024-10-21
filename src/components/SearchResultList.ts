@@ -74,6 +74,13 @@ export class SearchResultList extends LitElement {
 		.button-container {
 			margin-left: 1rem;
 		}
+		.instructions {
+			margin-top: 1rem;
+			display: -webkit-box;
+			-webkit-line-clamp: 3;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+		}
 		button {
 			background-color: var(--primary-color);
 			color: var(--bg-color);
@@ -193,7 +200,7 @@ export class SearchResultList extends LitElement {
 										</button>
 									</div>
 								</div>
-								<p>${drink.strInstructions}</p>
+								<p class="instructions">${drink.strInstructions}</p>
 								<div class="ingredients">
 									${this.getIngredients(drink).map(
 										(ingredient) => html`
