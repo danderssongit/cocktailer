@@ -1,42 +1,26 @@
-import { LitElement, html, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { html } from "lit-html";
+import { component, useEffect } from "haunted";
 
-@customElement("print-button")
-export class PrintButton extends LitElement {
-	@property({ type: String }) selector = "";
-	@property({ type: Boolean }) disabled = false;
+interface PrintButtonElement extends HTMLElement {
+	selector: string;
+	disabled: boolean;
+}
 
-	static styles = css`
-		button {
-			background-color: var(--primary-color, #333333);
-			color: var(--bg-color, #ffffff);
-			border: none;
-			padding: 0.5rem 1rem;
-			border-radius: 0.25rem;
-			cursor: pointer;
-			font-size: 1rem;
-			transition: background-color 0.3s ease;
+function PrintButton(element: PrintButtonElement) {
+	const selector = element.selector || "";
+	const disabled = element.disabled || false;
+
+	useEffect(() => {
+		if (element.shadowRoot) {
+			element.shadowRoot.adoptedStyleSheets = [sheet];
+		} else {
+			console.warn("PrintButton: No shadowRoot found");
 		}
+	}, []);
 
-		button:disabled {
-			cursor: not-allowed;
-			background-color: var(--primary-color-light, #444444);
-		}
-
-		button:hover:not(:disabled) {
-			background-color: var(--primary-color-dark, #222222);
-		}
-
-		@media print {
-			:host {
-				display: none;
-			}
-		}
-	`;
-
-	handlePrint() {
-		const parentElement = this.getRootNode() as ShadowRoot;
-		const elementToPrint = parentElement.querySelector(this.selector);
+	const handlePrint = () => {
+		const parentElement = element.getRootNode() as ShadowRoot;
+		const elementToPrint = parentElement.querySelector(selector);
 
 		if (elementToPrint) {
 			const printContent = elementToPrint.innerHTML;
@@ -44,13 +28,13 @@ export class PrintButton extends LitElement {
 
 			if (printWindow) {
 				printWindow.document.write(`
-				<html>
-					<head>
-					    <title>Print</title>
-					</head>
-					<body>${printContent}</body>
-				</html>
-				`);
+                <html>
+                    <head>
+                    <title>Print</title>
+                    </head>
+                    <body>${printContent}</body>
+                </html>
+                `);
 				printWindow.document.close();
 				printWindow.focus();
 				printWindow.print();
@@ -59,13 +43,68 @@ export class PrintButton extends LitElement {
 				console.error("Unable to open print window");
 			}
 		}
-	}
+	};
 
-	render() {
-		return html`
-			<button @click=${this.handlePrint} ?disabled=${this.disabled}>
-				<slot>Print</slot>
-			</button>
-		`;
+	return html`
+		<button @click=${handlePrint} ?disabled=${disabled}>
+			<slot>Printing</slot>
+		</button>
+	`;
+}
+
+const styles = `
+  :host {
+    display: block;
+    width: 100%;
+  }
+
+  button {
+    background-color: var(--primary-color, #250524) ;
+    color: var(--bg-color, #fff);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius, 0.5rem);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.35;
+    background-color: var(--primary-color-light, #4a0a48);
+  }
+
+  button:hover:not(:disabled) {
+    background-color: var(--primary-color-dark, #120212);
+  }
+
+  @media print {
+    :host {
+      display: none;
+    }
+  }
+`;
+
+const sheet = new CSSStyleSheet();
+sheet.replaceSync(styles);
+
+customElements.define(
+	"print-button",
+	component(PrintButton, {
+		useShadowDOM: true,
+		observedAttributes: ["selector", "disabled"],
+	})
+);
+
+declare global {
+	interface HTMLElementTagNameMap {
+		"print-button": PrintButtonElement;
 	}
 }
+
+export { PrintButton };

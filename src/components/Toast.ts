@@ -1,65 +1,86 @@
-import { LitElement, html, css } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { html } from "lit-html";
+import { component } from "haunted";
 
-@customElement("toast-message")
-export class Toast extends LitElement {
-	@property({ type: String }) message = "";
+interface ToastElement extends HTMLElement {
+	message?: string;
+}
 
-	static styles = css`
-		:host {
-			position: fixed;
-			bottom: 20px;
-			right: 2rem;
-			transform: translateY(0);
-			background-color: var(--primary-color);
-			color: var(--bg-color);
-			padding: 10px 20px;
-			border-radius: var(--border-radius);
-			opacity: 0;
-			transition: opacity 0.3s ease, transform 0.3s ease;
-			z-index: 1000;
-			pointer-events: none;
-		}
+function Toast(element: ToastElement) {
+	const message = element.message || "";
 
-		:host([visible]) {
-			opacity: 1;
-		}
-
-		:host([exiting]) {
-			opacity: 0;
-			transform: translateY(100%);
-		}
-
-		/* Add these styles for stacking toasts */
-		:host(:nth-last-of-type(2)) {
-			transform: translateY(-60px);
-		}
-
-		:host(:nth-last-of-type(3)) {
-			transform: translateY(-120px);
-		}
-
-		:host(:nth-last-of-type(n + 4)) {
-			transform: translateY(-180px);
-		}
-	`;
-
-	connectedCallback() {
-		super.connectedCallback();
-		this.setAttribute("visible", "");
-		setTimeout(() => this.dismiss(), 3000);
+	if (element.shadowRoot) {
+		element.shadowRoot.adoptedStyleSheets = [sheet];
 	}
 
-	dismiss() {
-		this.setAttribute("exiting", "");
+	element.setAttribute("visible", "");
+	setTimeout(() => dismiss(element), 3000);
+
+	const dismiss = (el: HTMLElement) => {
+		el.setAttribute("exiting", "");
 		setTimeout(() => {
-			this.dispatchEvent(
+			el.dispatchEvent(
 				new CustomEvent("toast-dismissed", { bubbles: true, composed: true })
 			);
 		}, 300);
+	};
+
+	return html`<div>${message}</div>`;
+}
+
+const styles = `
+	:host {
+		position: fixed;
+		bottom: 20px;
+		right: 2rem;
+		transform: translateY(0);
+		background-color: var(--primary-color);
+		color: var(--bg-color);
+		padding: 10px 20px;
+		border-radius: var(--border-radius);
+		opacity: 0;
+		transition: opacity 0.3s ease, transform 0.3s ease;
+		z-index: 1000;
+		pointer-events: none;
 	}
 
-	render() {
-		return html`<div>${this.message}</div>`;
+	:host([visible]) {
+		opacity: 1;
+	}
+
+	:host([exiting]) {
+		opacity: 0;
+		transform: translateY(100%);
+	}
+
+	/* Add these styles for stacking toasts */
+	:host(:nth-last-of-type(2)) {
+		transform: translateY(-60px);
+	}
+
+	:host(:nth-last-of-type(3)) {
+		transform: translateY(-120px);
+	}
+
+	:host(:nth-last-of-type(n + 4)) {
+		transform: translateY(-180px);
+	}
+`;
+
+const sheet = new CSSStyleSheet();
+sheet.replaceSync(styles);
+
+customElements.define(
+	"toast-message",
+	component(Toast, {
+		useShadowDOM: true,
+		observedAttributes: ["message"],
+	})
+);
+
+declare global {
+	interface HTMLElementTagNameMap {
+		"toast-message": ToastElement;
 	}
 }
+
+export { Toast };
