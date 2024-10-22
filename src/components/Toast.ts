@@ -13,7 +13,7 @@ function Toast(element: ToastElement) {
 	}
 
 	element.setAttribute("visible", "");
-	setTimeout(() => dismiss(element), 3000);
+	setTimeout(() => dismiss(element), 5000);
 
 	const dismiss = (el: HTMLElement) => {
 		el.setAttribute("exiting", "");

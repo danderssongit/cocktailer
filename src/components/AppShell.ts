@@ -33,15 +33,15 @@ function AppShell(element: HTMLElement) {
 
 	const handleSearch = async (e: CustomEvent) => {
 		const query = e.detail;
-		showToast("Searching...");
 		try {
 			const response = await fetch(
 				`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${query}`
 			);
 			const data: { drinks: Drink[] } = await response.json();
-			setDrinks(data.drinks || []);
-			if (drinks.length > 0) {
-				showToast(`Found ${drinks.length} results.`);
+			const results = data.drinks || [];
+			setDrinks(results);
+			if (results.length > 0) {
+				showToast(`Found ${results.length} results.`);
 			} else {
 				showToast("No results found.");
 			}
