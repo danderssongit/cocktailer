@@ -2,7 +2,7 @@ import { html } from "lit-html";
 import { Drink } from "../types";
 import { preFetchedDrinks } from "../data";
 
-import { component, useState } from "haunted";
+import { component, useState, useEffect } from "haunted";
 
 import "./SearchBar";
 import "./SearchResultList";
@@ -14,6 +14,14 @@ function AppShell(element: HTMLElement) {
 	const [shoppingList, setShoppingList] = useState<Set<string>>(new Set());
 	const [isShoppingListVisible, setIsShoppingListVisible] = useState(false);
 	const [toastMessages, setToastMessages] = useState<string[]>([]);
+
+	useEffect(() => {
+		if (isShoppingListVisible) {
+			element.setAttribute("data-shopping-list-visible", "true");
+		} else {
+			element.removeAttribute("data-shopping-list-visible");
+		}
+	}, [isShoppingListVisible]);
 
 	if (element.shadowRoot) {
 		element.shadowRoot.adoptedStyleSheets = [sheet];
@@ -157,6 +165,27 @@ const styles = `
 
 		.toggle-shopping-list {
 			display: none;
+		}
+	}
+
+	@media (max-width: 768px) {
+		:host::before {
+			content: '';
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: rgba(0, 0, 0, 0.5);
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 0.3s ease-in-out;
+			z-index: 999;
+		}
+
+		:host([data-shopping-list-visible="true"])::before {
+			opacity: 1;
+			pointer-events: auto;
 		}
 	}
 `;

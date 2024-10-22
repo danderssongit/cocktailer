@@ -1,5 +1,5 @@
 import { html } from "lit-html";
-import { component } from "haunted";
+import { component, useEffect } from "haunted";
 
 import "./PrintButton";
 
@@ -12,12 +12,13 @@ function ShoppingList(element: ShoppingListElement) {
 	const items = element.items || [];
 	const visible = element.visible || false;
 
-	// Update the visible attribute to enable CSS transitions
-	if (visible) {
-		element.setAttribute("visible", "");
-	} else {
-		element.removeAttribute("visible");
-	}
+	useEffect(() => {
+		if (visible) {
+			element.setAttribute("visible", "");
+		} else {
+			element.removeAttribute("visible");
+		}
+	}, [visible]);
 
 	const closeList = () => {
 		element.dispatchEvent(
@@ -107,15 +108,29 @@ const styles = `
       right: -100%;
       width: 80%;
       max-width: 400px;
-      height: 100%;
-      border-radius: 0;
+      height: fit-content;
+      background-color: var(--bg-color, #fff);
       transition: right 0.3s ease-in-out;
       z-index: 1000;
-      background-color: var(--bg-color);
+      padding: 1rem;
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
     }
 
     :host([visible]) {
       right: 0;
+    }
+
+    .content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      box-shadow: none;
+      padding: 0;
+    }
+
+    .print-content {
+      flex: 1;
+      overflow-y: auto;
     }
 
     .close-button {
@@ -130,6 +145,7 @@ const styles = `
       font-size: 1.2rem;
       padding: 0.5rem;
       line-height: 1;
+      z-index: 1;
     }
 
     .close-button:hover {
@@ -139,7 +155,6 @@ const styles = `
 
   print-button {
     display: block;
-    margin-top: 1rem;
     width: 100%;
   }
 `;
