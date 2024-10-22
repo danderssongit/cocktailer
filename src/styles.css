@@ -1,20 +1,27 @@
 :root {
+	/* Typography */
 	--font-family: "Futura", Arial, sans-serif;
 	--font-size: 16px;
+
+	/* Colors - Base */
 	--text-color: #333;
 	--bg-color: #fff;
-	--border-color: #ccc;
-	--border-radius: 1.5rem;
-	--focus-color: #007bff;
-	--focus-shadow-color: #007bff;
+	--border-color: #ddd;
 
+	/* Colors - Theme */
 	--primary-color: #250524;
-	--primary-color-light: #c2c2c2;
-	--primary-color-dark: #45a049;
+	--primary-color-light: #4a0a48;
+	--primary-color-dark: #120212;
 	--secondary-color: #666;
 	--success-color: #4caf50;
 
-	--card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.08);
+	/* Layout */
+	--border-radius: 0.5rem;
+
+	/* Effects */
+	--focus-color: #007bff;
+	--focus-shadow-color: rgba(0, 123, 255, 0.25);
+	--card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 body {

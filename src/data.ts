@@ -1,6 +1,6 @@
 import { Drink } from "./types";
 
-export const drinks: Drink[] = [
+export const preFetchedDrinks: Drink[] = [
 	{
 		idDrink: "11007",
 		strDrink: "Margarita",
