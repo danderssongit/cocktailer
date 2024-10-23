@@ -11,6 +11,11 @@ export const themes = {
 		focusShadowColor: "rgba(0, 123, 255, 0.25)",
 		cardShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
 		successColor: "#4caf50",
+		errorColor: "#ffc21c",
+		infoColor: "#2196f3",
+		successTextColor: "#ffffff",
+		errorTextColor: "#ffffff",
+		infoTextColor: "#ffffff",
 	},
 	dark: {
 		bgColor: "#1a202c",
@@ -24,6 +29,11 @@ export const themes = {
 		focusShadowColor: "rgba(99, 179, 237, 0.25)",
 		cardShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
 		successColor: "#68d391",
+		errorColor: "#fc8181",
+		infoColor: "#63b3ed",
+		successTextColor: "#1a202c",
+		errorTextColor: "#1a202c",
+		infoTextColor: "#1a202c",
 	},
 	halloween: {
 		bgColor: "#160B00",
@@ -37,6 +47,11 @@ export const themes = {
 		focusShadowColor: "rgba(255, 109, 0, 0.25)",
 		cardShadow: "0 2px 8px rgba(0, 0, 0, 0.5)",
 		successColor: "#00C853",
+		errorColor: "#D50000",
+		infoColor: "#AA00FF",
+		successTextColor: "#000000",
+		errorTextColor: "#ffffff",
+		infoTextColor: "#ffffff",
 	},
 } as const;
 
