@@ -8,6 +8,7 @@ import "./SearchBar";
 import "./SearchResultList";
 import "./ShoppingList";
 import "./Toast";
+import "./ThemeSwitcher";
 
 function AppShell(element: HTMLElement) {
 	const [drinks, setDrinks] = useState<Drink[]>(preFetchedDrinks);
@@ -54,7 +55,7 @@ function AppShell(element: HTMLElement) {
 
 	const addAllToShoppingList = (ingredients: string[]) => {
 		ingredients.forEach((ingredient) => shoppingList.add(ingredient));
-		setShoppingList(new Set(shoppingList)); // Create a new Set to trigger update
+		setShoppingList(new Set(shoppingList));
 		showToast("Ingredients added to shopping list.");
 	};
 
@@ -67,7 +68,10 @@ function AppShell(element: HTMLElement) {
 	};
 
 	return html`
-		<search-bar @search=${handleSearch}></search-bar>
+		<div class="top-bar">
+			<search-bar @search=${handleSearch}></search-bar>
+			<theme-switcher></theme-switcher>
+		</div>
 		<div class="main-content">
 			<search-result-list
 				.drinks=${drinks}
@@ -110,6 +114,12 @@ const styles = `
 		flex-direction: column;
 		height: 100vh;
 		padding: 2rem;
+	}
+
+	.top-bar {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
 
 	.main-content {
