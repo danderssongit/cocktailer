@@ -10,12 +10,15 @@ import "./SearchResultList";
 import "./ShoppingList";
 import "./Toast";
 import "./ThemeSwitcher";
+import { MeasurementSystem } from "../utils/measurementUtils";
 
 function AppShell(element: HTMLElement) {
 	const [drinks, setDrinks] = useState<Drink[]>(preFetchedDrinks);
 	const [shoppingList, setShoppingList] = useState<Set<string>>(new Set());
 	const [isShoppingListVisible, setIsShoppingListVisible] = useState(false);
 	const [toasts, setToasts] = useState<ToastMessage[]>([]);
+	const [measurementSystem, setMeasurementSystem] =
+		useState<MeasurementSystem>("imperial");
 
 	useEffect(() => {
 		if (isShoppingListVisible) {
@@ -82,19 +85,36 @@ function AppShell(element: HTMLElement) {
 
 	return html`
 		<div class="top-bar">
-			<search-bar @search=${handleSearch}></search-bar>
-			<theme-switcher></theme-switcher>
+			<div class="title-container">
+				<span class="title">🍹</span>
+				<search-bar @search=${handleSearch}></search-bar>
+			</div>
+			<div class="controls">
+				<select
+					class="measurement-select"
+					@change=${(e: Event) =>
+						setMeasurementSystem(
+							(e.target as HTMLSelectElement).value as MeasurementSystem
+						)}
+				>
+					<option value="imperial">Imperial</option>
+					<option value="metric">Metric</option>
+				</select>
+				<theme-switcher></theme-switcher>
+			</div>
 		</div>
 		<div class="main-content">
 			<search-result-list
 				.drinks=${drinks}
 				.shoppingList=${shoppingList}
+				.measurementSystem=${measurementSystem}
 				@add-all-to-shopping-list=${(e: CustomEvent) =>
 					addAllToShoppingList(e.detail)}
 			></search-result-list>
 			<shopping-list
 				.items=${Array.from(shoppingList)}
 				?visible=${isShoppingListVisible}
+				.measurementSystem=${measurementSystem}
 				@close-shopping-list=${handleCloseShoppingList}
 			></shopping-list>
 		</div>
@@ -133,6 +153,16 @@ const styles = `
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+
+		.title-container {
+			display: flex;
+			align-items: center;
+
+			.title {
+				font-size: 4rem;
+				margin-right: 1rem;
+			}
+		}
 	}
 
 	.main-content {
@@ -210,6 +240,28 @@ const styles = `
 			opacity: 1;
 			pointer-events: auto;
 		}
+	}
+
+	.controls {
+		display: flex;
+		gap: 1rem;
+		align-items: center;
+	}
+
+	.measurement-select {
+		padding: 0.5rem;
+		border-radius: var(--border-radius);
+		border: 1px solid var(--border-color);
+		background-color: var(--bg-color);
+		color: var(--text-color);
+		font-family: var(--font-family);
+		cursor: pointer;
+	}
+
+	.measurement-select:focus {
+		outline: none;
+		border-color: var(--focus-color);
+		box-shadow: 0 0 0 2px var(--focus-shadow-color);
 	}
 `;
 

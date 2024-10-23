@@ -6,6 +6,7 @@ import "./SearchResultItem";
 interface SearchResultListElement extends HTMLElement {
 	drinks?: Drink[];
 	shoppingList?: Set<string>;
+	measurementSystem?: "metric" | "imperial";
 }
 
 function SearchResultList(element: SearchResultListElement) {
@@ -66,6 +67,7 @@ function SearchResultList(element: SearchResultListElement) {
 						(drink) => html`
 							<search-result-item
 								.item=${processDrinkWithShoppingList(drink)}
+								.measurementSystem=${element.measurementSystem}
 							></search-result-item>
 						`
 				  )}
