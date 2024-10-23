@@ -1,34 +1,66 @@
+export enum UnitName {
+	OUNCE = "oz",
+	CUP = "cup",
+	TABLESPOON = "spoon",
+	TEASPOON = "teaspoon",
+}
+
+export enum MetricUnit {
+	MILLILITER = "ml",
+	CENTILITER = "cl",
+	DECILITER = "dl",
+}
+
+export enum ImperialUnit {
+	OUNCE = "oz",
+	CUP = "cup",
+	TABLESPOON = "tbsp",
+	TEASPOON = "tsp",
+}
+
 type Unit = {
-	name: string;
+	name: UnitName;
 	aliases: string[];
-	toMetric: (value: number) => { value: number; unit: string };
-	toImperial: (value: number) => { value: number; unit: string };
+	toMetric: (value: number) => { value: number; unit: MetricUnit };
+	toImperial: (value: number) => { value: number; unit: ImperialUnit };
 };
 
 const units: Unit[] = [
 	{
-		name: "oz",
+		name: UnitName.OUNCE,
 		aliases: ["oz", "ounce", "ounces", "fl oz"],
-		toMetric: (value) => ({ value: value * 29.5735, unit: "ml" }),
-		toImperial: (value) => ({ value, unit: "oz" }),
+		toMetric: (value) => ({
+			value: value * 29.5735,
+			unit: MetricUnit.MILLILITER,
+		}),
+		toImperial: (value) => ({ value, unit: ImperialUnit.OUNCE }),
 	},
 	{
-		name: "cup",
+		name: UnitName.CUP,
 		aliases: ["cup", "cups"],
-		toMetric: (value) => ({ value: value * 236.588, unit: "ml" }),
-		toImperial: (value) => ({ value, unit: "cup" }),
+		toMetric: (value) => ({
+			value: value * 236.588,
+			unit: MetricUnit.MILLILITER,
+		}),
+		toImperial: (value) => ({ value, unit: ImperialUnit.CUP }),
 	},
 	{
-		name: "spoon",
+		name: UnitName.TABLESPOON,
 		aliases: ["spoon", "spoons", "tblsp", "tbsp", "tablespoon", "tablespoons"],
-		toMetric: (value) => ({ value: value * 14.7868, unit: "ml" }),
-		toImperial: (value) => ({ value, unit: "tbsp" }),
+		toMetric: (value) => ({
+			value: value * 14.7868,
+			unit: MetricUnit.MILLILITER,
+		}),
+		toImperial: (value) => ({ value, unit: ImperialUnit.TABLESPOON }),
 	},
 	{
-		name: "teaspoon",
+		name: UnitName.TEASPOON,
 		aliases: ["tsp", "teaspoon", "teaspoons"],
-		toMetric: (value) => ({ value: value * 4.92892, unit: "ml" }),
-		toImperial: (value) => ({ value, unit: "tsp" }),
+		toMetric: (value) => ({
+			value: value * 4.92892,
+			unit: MetricUnit.MILLILITER,
+		}),
+		toImperial: (value) => ({ value, unit: ImperialUnit.TEASPOON }),
 	},
 ];
 
@@ -88,11 +120,11 @@ export function convertMeasurement(
 	const roundedValue = Math.round(converted.value);
 
 	// Convert to cl/dl if appropriate (metric only)
-	if (targetSystem === "metric" && converted.unit === "ml") {
+	if (targetSystem === "metric" && converted.unit === MetricUnit.MILLILITER) {
 		if (roundedValue >= 100) {
-			return `${Math.round(roundedValue / 100)} dl`;
+			return `${Math.round(roundedValue / 100)} ${MetricUnit.DECILITER}`;
 		} else if (roundedValue >= 10) {
-			return `${Math.round(roundedValue / 10)} cl`;
+			return `${Math.round(roundedValue / 10)} ${MetricUnit.CENTILITER}`;
 		}
 	}
 
@@ -103,16 +135,9 @@ export function formatMeasuredItem(
 	item: string,
 	targetSystem: MeasurementSystem
 ): string {
-	const measurementUnits = [
-		"oz",
-		"cup",
-		"cups",
-		"spoon",
-		"tsp",
-		"tbsp",
-		"tablespoon",
-		"teaspoon",
-	];
+	const measurementUnits = Object.values(UnitName).map((unit) =>
+		unit.toLowerCase()
+	);
 
 	// Look for measurement at the start of the string
 	const measurePattern = new RegExp(
