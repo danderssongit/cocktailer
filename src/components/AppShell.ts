@@ -4,16 +4,18 @@ import { preFetchedDrinks } from "../data";
 
 import { component, useState, useEffect } from "haunted";
 
+import { ToastMessage, ToastType } from "./Toast";
 import "./SearchBar";
 import "./SearchResultList";
 import "./ShoppingList";
 import "./Toast";
+import "./ThemeSwitcher";
 
 function AppShell(element: HTMLElement) {
 	const [drinks, setDrinks] = useState<Drink[]>(preFetchedDrinks);
 	const [shoppingList, setShoppingList] = useState<Set<string>>(new Set());
 	const [isShoppingListVisible, setIsShoppingListVisible] = useState(false);
-	const [toastMessages, setToastMessages] = useState<string[]>([]);
+	const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
 	useEffect(() => {
 		if (isShoppingListVisible) {
@@ -27,8 +29,8 @@ function AppShell(element: HTMLElement) {
 		element.shadowRoot.adoptedStyleSheets = [sheet];
 	}
 
-	const showToast = (message: string) => {
-		setToastMessages([...toastMessages, message]);
+	const showToast = (toastMessage: ToastMessage) => {
+		setToasts([...toasts, toastMessage]);
 	};
 
 	const handleSearch = async (e: CustomEvent) => {
@@ -41,21 +43,33 @@ function AppShell(element: HTMLElement) {
 			const results = data.drinks || [];
 			setDrinks(results);
 			if (results.length > 0) {
-				showToast(`Found ${results.length} results.`);
+				showToast({
+					message: `Found ${results.length} results.`,
+					type: ToastType.INFO,
+				});
 			} else {
-				showToast("No results found.");
+				showToast({
+					message: "No results found.",
+					type: ToastType.ERROR,
+				});
 			}
 		} catch (error) {
 			console.error("Error fetching drinks:", error);
 			setDrinks([]);
-			showToast("An error occurred while searching.");
+			showToast({
+				message: "An error occurred while searching.",
+				type: ToastType.ERROR,
+			});
 		}
 	};
 
 	const addAllToShoppingList = (ingredients: string[]) => {
 		ingredients.forEach((ingredient) => shoppingList.add(ingredient));
-		setShoppingList(new Set(shoppingList)); // Create a new Set to trigger update
-		showToast("Ingredients added to shopping list.");
+		setShoppingList(new Set(shoppingList));
+		showToast({
+			message: "Ingredients added to shopping list.",
+			type: ToastType.SUCCESS,
+		});
 	};
 
 	const toggleShoppingList = () => {
@@ -67,7 +81,10 @@ function AppShell(element: HTMLElement) {
 	};
 
 	return html`
-		<search-bar @search=${handleSearch}></search-bar>
+		<div class="top-bar">
+			<search-bar @search=${handleSearch}></search-bar>
+			<theme-switcher></theme-switcher>
+		</div>
 		<div class="main-content">
 			<search-result-list
 				.drinks=${drinks}
@@ -92,12 +109,12 @@ function AppShell(element: HTMLElement) {
 				/>
 			</svg>
 		</button>
-		${toastMessages.map(
-			(message) => html`
+		${toasts.map(
+			(toast) => html`
 				<toast-message
-					.message=${message}
-					@toast-dismissed=${() =>
-						setToastMessages(toastMessages.filter((m) => m !== message))}
+					.message=${toast.message}
+					.type=${toast.type}
+					@toast-dismissed=${() => setToasts(toasts.filter((t) => t !== toast))}
 				></toast-message>
 			`
 		)}
@@ -110,6 +127,12 @@ const styles = `
 		flex-direction: column;
 		height: 100vh;
 		padding: 2rem;
+	}
+
+	.top-bar {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
 
 	.main-content {
