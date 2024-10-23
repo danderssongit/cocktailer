@@ -2,13 +2,19 @@ import { html } from "lit-html";
 import { component, useEffect } from "haunted";
 import { applyAverageColorToElement } from "../utils/imageUtils";
 import { ProcessedDrinkItem, ProcessedIngredient } from "../types";
+import {
+	convertMeasurement,
+	MeasurementSystem,
+} from "../utils/measurementUtils";
 
 interface SearchResultElement extends HTMLElement {
 	item: ProcessedDrinkItem;
+	measurementSystem?: MeasurementSystem;
 }
 
 function SearchResultItem(element: SearchResultElement) {
 	const item = element.item;
+	const measurementSystem = element.measurementSystem || "imperial";
 
 	useEffect(() => {
 		const image = element.shadowRoot?.querySelector("img") as HTMLImageElement;
@@ -46,6 +52,10 @@ function SearchResultItem(element: SearchResultElement) {
 				})
 			);
 		}
+	};
+
+	const formatMeasure = (measure: string | null): string => {
+		return convertMeasurement(measure, measurementSystem);
 	};
 
 	if (!item) {
@@ -91,7 +101,7 @@ function SearchResultItem(element: SearchResultElement) {
 									: ""}"
 							>
 								${ingredient.measure
-									? `${ingredient.measure} `
+									? `${formatMeasure(ingredient.measure)} `
 									: ""}${ingredient.name}
 							</span>
 						`
@@ -200,7 +210,6 @@ customElements.define(
 	"search-result-item",
 	component(SearchResultItem, {
 		useShadowDOM: true,
-		observedAttributes: [],
 	})
 );
 

@@ -1,26 +1,22 @@
 import { html } from "lit-html";
-import { component, useEffect } from "haunted";
-
+import { component } from "haunted";
+import {
+	MeasurementSystem,
+	formatMeasuredItem,
+} from "../utils/measurementUtils";
 import "./PrintButton";
 
 interface ShoppingListElement extends HTMLElement {
 	items: string[];
 	visible?: boolean;
+	measurementSystem?: MeasurementSystem;
 }
 
 function ShoppingList(element: ShoppingListElement) {
 	const items = element.items || [];
-	const visible = element.visible || false;
+	const measurementSystem = element.measurementSystem || "imperial";
 
-	useEffect(() => {
-		if (visible) {
-			element.setAttribute("visible", "");
-		} else {
-			element.removeAttribute("visible");
-		}
-	}, [visible]);
-
-	const closeList = () => {
+	const handleClose = () => {
 		element.dispatchEvent(
 			new CustomEvent("close-shopping-list", {
 				bubbles: true,
@@ -35,20 +31,23 @@ function ShoppingList(element: ShoppingListElement) {
 
 	return html`
 		<div class="content">
-			<button class="close-button" @click=${closeList}>X</button>
+			<button class="close-button" @click=${handleClose}>×</button>
 			<div class="print-content">
 				<h2>Shopping List</h2>
 				${items.length === 0
 					? html`<p class="empty-list">Your shopping list is empty.</p>`
 					: html`
 							<ul>
-								${items.map((item) => html` <li>${item}</li> `)}
+								${items.map(
+									(item) =>
+										html`<li>
+											${formatMeasuredItem(item, measurementSystem)}
+										</li>`
+								)}
 							</ul>
 					  `}
 			</div>
-			<print-button selector=".print-content" .disabled="${items.length === 0}">
-				Print
-			</print-button>
+			<print-button selector=".print-content"></print-button>
 		</div>
 	`;
 }
@@ -164,7 +163,10 @@ sheet.replaceSync(styles);
 
 customElements.define(
 	"shopping-list",
-	component(ShoppingList, { useShadowDOM: true })
+	component(ShoppingList, {
+		useShadowDOM: true,
+		observedAttributes: ["visible"],
+	})
 );
 
 declare global {
